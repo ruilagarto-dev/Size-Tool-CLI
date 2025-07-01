@@ -20,7 +20,7 @@ def readable_size(size: int) -> str:
     return f"{size:.2f} PB"  # Just in case file is huge
 
 def print_usage():
-    print(f"Usage: {sys.argv[0]} <file_path>", file=sys.stderr)
+    print(f"Usage: {sys.argv[0]} <file_path> [file_path...]", file=sys.stderr)
 
 def main():
     if len(sys.argv) < 2:
@@ -28,16 +28,14 @@ def main():
         print_usage()
         sys.exit(1)
 
-    path = sys.argv[1]
-    try:
-        size = os.path.getsize(path)
-        print(readable_size(size))
-    except FileNotFoundError:
-        print(f"Error: file '{path}' not found.", file=sys.stderr)
-        sys.exit(1)
-    except PermissionError:
-        print(f"Error: permission denied to access '{path}'.", file=sys.stderr)
-        sys.exit(1)
+    for path in sys.argv[1:]:
+        try:
+            size = os.path.getsize(path)
+            print(f"{path}: {readable_size(size)}")
+        except FileNotFoundError:
+            print(f"Error: file '{path}' not found.", file=sys.stderr)
+        except PermissionError:
+            print(f"Error: permission denied to access '{path}'.", file=sys.stderr)
 
 if __name__ == "__main__":
     main()
