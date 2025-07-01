@@ -3,19 +3,41 @@
 import os
 import sys
 
-def tamanho_legivel(size):
+def readable_size(size: int) -> str:
+    """
+    Convert a file size in bytes to a human-readable string with units.
+    
+    Args:
+        size (int): File size in bytes.
+        
+    Returns:
+        str: Human-readable file size string.
+    """
     for unit in ['bytes', 'KB', 'MB', 'GB', 'TB']:
         if size < 1024:
             return f"{size:.2f} {unit}"
         size /= 1024
+    return f"{size:.2f} PB"  # Just in case file is huge
+
+def print_usage():
+    print(f"Usage: {sys.argv[0]} <file_path>", file=sys.stderr)
+
+def main():
+    if len(sys.argv) < 2:
+        print("[Error] Missing file path argument.", file=sys.stderr)
+        print_usage()
+        sys.exit(1)
+
+    path = sys.argv[1]
+    try:
+        size = os.path.getsize(path)
+        print(readable_size(size))
+    except FileNotFoundError:
+        print(f"Error: file '{path}' not found.", file=sys.stderr)
+        sys.exit(1)
+    except PermissionError:
+        print(f"Error: permission denied to access '{path}'.", file=sys.stderr)
+        sys.exit(1)
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Uso: size <ficheiro>")
-    else:
-        caminho = sys.argv[1]
-        try:
-            tamanho = os.path.getsize(caminho)
-            print(tamanho_legivel(tamanho))
-        except FileNotFoundError:
-            print(f"Erro: ficheiro '{caminho}' não encontrado.")
+    main()
