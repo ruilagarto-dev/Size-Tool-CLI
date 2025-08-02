@@ -1,6 +1,3 @@
 # Size-Tool-CLI
 
-chmod +x install.sh
-
-./install.sh
-
+![f](demo/size_cli.png)
